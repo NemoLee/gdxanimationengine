@@ -48,21 +48,75 @@ public class Sequence {
      */
     private List<HashMap<Long, Keyframe>> mKeyframes;
 
-    public void addKeyframe(Keyframe keyframe) {
+    /**
+     * <p>
+     * Add a Keyframe to the Sequence in a direct fashion. May be the most unused method since direct client
+     * instantiation of Keyframe is prohibited (instantiation is preferred via obtain pattern). Exists as a
+     * viable contextual option.
+     * </p>
+     *
+     * @param keyframe The Keyframe to add to the Sequence
+     */
+    public void addKeyframe(final Keyframe keyframe) {
         HashMap<Long, Keyframe> hashMap = new HashMap<Long, Keyframe>();
         hashMap.put(keyframe.mSeatedFrame, keyframe);
         mKeyframes.add(hashMap);
     }
 
-    public void addKeyframe(HashMap<Long, Keyframe> map) {
+    /**
+     * <p>
+     *     Add a properly instantiated HashMap containing the Keyframe to the Sequence. This method assumes
+     *     the most about the prior work by client code as it assumes the client has built the HashMap against
+     *     the requirements of Keyframe Injection into the Sequence.
+     * </p>
+     *
+     * @param map A HashMap containing the Keyframe to add to the Sequence
+     */
+    public void addKeyframe(final HashMap<Long, Keyframe> map) {
         mKeyframes.add(map);
     }
 
-    public void addKeyframe(long frame, AnimationEvent animationEventImpl) {
+    /**
+     * <p>
+     *     Adds a Keyframe to the Sequence via raw Keyframe data defined by the client. The values asked for
+     *     by this method are the very same used to construct a Keyframe. This method does the most work to
+     *     inject a Keyframe but it may be the most friendly to the client.
+     * </p>
+     *
+     * @param frame The "frame" to seat the Keyframe on (in milliseconds)
+     * @param animationEventImpl An object reference that implements AnimationEvent
+     */
+    public void addKeyframe(final long frame, final AnimationEvent animationEventImpl) {
         HashMap<Long, Keyframe> hashMap = new HashMap<Long, Keyframe>();
         Keyframe keyframe = Keyframe.obtain(animationEventImpl, frame);
 
         hashMap.put(keyframe.mSeatedFrame, keyframe);
         mKeyframes.add(hashMap);
+    }
+
+    /**
+     * <p>
+     *     Defines the playback mode of the Sequence. Following are the definitions of the playback modes.
+     * </p>
+     * <ul>
+     *     <li>NONLOOP_FORWARD - Runs the Play Head through the Sequence once from frame 0 to frame n-1</li>
+     *     <li>NONLOOP_REVERSE - Runs the Play Head through the Sequence once from frame n-1 to frame 0</li>
+     *     <li>LOOP_FORWARD_X - Runs the Play Head through the Sequence x number of times from frame 0 to frame n-1, restarting at frame 0 each time</li>
+     *     <li>LOOP_REVERSE_X - Runs the Play Head through the Sequence x number of times from frame n-1 to frame 0, restarting at frame n-1 each time</li>
+     *     <li>LOOP_PINGPONG - Runs the Play Head through the Sequence a total of two times, once forward (from frame 0 to frame n-1) and then once backward (from frame n-1 to frame 0)</li>
+     *     <li>LOOP_PONGPING - Runs the Play Head through the Sequence a total of two times, once reverse (from frame n-1 to frame 0) and then once forward (from frame 0 to frame n-1)</li>
+     *     <li>LOOP_PINGPONG_X - Runs the Play Head through the Sequence x number of times in a PingPong fashion (hence one iteration in this mode is actually two passes through the Sequence)</li>
+     *     <li>LOOP_PONGPING_X - Runs the Play Head through the Sequence x number of times in a PongPing fashion (hence one iteration in this mode is actually two passes through the Sequence)</li>
+     * </ul>
+     */
+    public enum SequencePlayMode {
+        NONLOOP_FORWARD,
+        NONLOOP_REVERSE,
+        LOOP_FORWARD_X,
+        LOOP_REVERSE_X,
+        NONLOOP_PINGPONG,
+        NONLOOP_PONGPING,
+        LOOP_PINGPONG_X,
+        LOOP_PONGPING_X
     }
 }
