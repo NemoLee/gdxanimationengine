@@ -42,8 +42,21 @@ public class Keyframe {
      * @param animationEventImpl - An external implementation of {@link com.gregfmartin.gdxanimationengine.AnimationEvent}
      * @param seatedFrame - The point in time to place the Keyframe at in a containing {@link com.gregfmartin.gdxanimationengine.Sequence}
      */
-    public Keyframe(AnimationEvent animationEventImpl, long seatedFrame) {
+    private Keyframe(AnimationEvent animationEventImpl, long seatedFrame) {
         mSeatedFrame = seatedFrame;
         mEvent = animationEventImpl;
+    }
+
+    /**
+     * <p>
+     *     obtain pattern for getting a lightweight instance in a pinch.
+     * </p>
+     *
+     * @param animationEventImpl
+     * @param seatedFrame
+     * @return
+     */
+    static final public Keyframe obtain(AnimationEvent animationEventImpl, long seatedFrame) {
+        return new Keyframe(animationEventImpl, seatedFrame);
     }
 }
